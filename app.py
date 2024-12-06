@@ -1,0 +1,36 @@
+import streamlit as st
+from perform_ocr import pdf_to_txt
+import zipfile, os
+from config import input_dir
+
+
+def save_uploaded_file(uploadedfile):
+    with open(os.path.join(input_dir, uploadedfile.name), "wb") as f:
+        f.write(uploadedfile.getbuffer())
+    return st.success("Saved File:{} to tempDir".format(uploadedfile.name))
+
+input_file = st.file_uploader('Choose your .pdf file', type="pdf")
+outputsetname = st.text_input(label= "Enter output set name  here", value="")
+language = st.text_input(label= "Enter language here", value="eng")
+if len(outputsetname) and len(input_file.name):
+    go = st.button("Get OCR")
+    if go:
+        save_uploaded_file(input_file)
+        with st.spinner('Loading...'):
+            outputDirectory = pdf_to_txt(input_dir + input_file.name, outputsetname, language, True, 'just')
+
+        zipfile_name = outputDirectory + '.zip'
+        zf = zipfile.ZipFile(zipfile_name, "w")
+        for dirname, subdirs, files in os.walk(outputDirectory):
+            zf.write(dirname)
+            for filename in files:
+                zf.write(os.path.join(dirname, filename))
+        zf.close()
+
+        with open(zipfile_name, "rb") as fp:
+            btn = st.download_button(
+                label = "Download ZIP",
+                data = fp,
+                file_name = f'{outputsetname}.zip',
+                mime = "application/zip"
+            )
