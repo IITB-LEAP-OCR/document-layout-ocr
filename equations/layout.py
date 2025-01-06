@@ -11,7 +11,7 @@ model = YOLOv10(filepath)
 # Annotate and save the result
 #results = model(image, save=False, show_labels=True, show_conf=True, show_boxes=True, conf=self.conf_thresh)
 
-def detect_figures(image_path):
+def get_equations(image_path):
     det_res = model.predict(
     image_path,   # Image to predict
     imgsz=1024,        # Prediction image size
@@ -27,7 +27,7 @@ def detect_figures(image_path):
         conf = entry.boxes.conf.cpu().numpy()
         for i in range(len(bboxes)):
             box = bboxes[i]
-            if conf[i] > thresh and classes[i] == 3:
+            if conf[i] > thresh and classes[i] == 8:
                 dets.append([int(box[0]), int(box[1]), int(box[2]), int(box[3])])
 
     return dets
@@ -37,8 +37,3 @@ def detect_figures(image_path):
 
 # Perform prediction
 # image_path = 'eq-page.png'
-
-if __name__ == "__main__":
-    image_path = 'samples/page.png'
-    result = detect_figures(image_path)
-    print(result)

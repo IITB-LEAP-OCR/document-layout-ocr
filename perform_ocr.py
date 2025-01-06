@@ -11,6 +11,7 @@ import time
 import sys
 from tables import get_table_hocrs
 from figures import detect_figures
+from equations import get_equation_hocrs
 from config import output_dir, config_dir
 
 def parse_boolean(b):
@@ -23,7 +24,7 @@ def simple_counter_generator(prefix="", suffix=""):
         i += 1
         yield 'p'
 
-def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_figures):
+def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_equations, enable_figures):
     outputDirIn = output_dir
     outputDirectory = outputDirIn + project_folder_name
     print('output directory is ', outputDirectory)
@@ -58,14 +59,6 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_f
     os.environ['IMAGESFOLDER'] = imagesFolder
     os.environ['OUTPUTDIRECTORY'] = outputDirectory
     tessdata_dir_config = r'--psm 3 --tessdata-dir "/usr/share/tesseract-ocr/4.00/tessdata/"'
-    # languages = pytesseract.get_languages(config=tessdata_dir_config)
-    # lcount = 0
-    # tesslanglist = {}
-    # for l in languages:
-    #     if not (l == 'osd'):
-    #         tesslanglist[lcount] = l
-    #         lcount += 1
-    #         print(str(lcount) + '. ' + l)
 
     print("Selected language model " + lang)
     os.environ['CHOSENMODEL'] = lang  # tesslanglist[int(linput)-1]
@@ -125,6 +118,28 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_f
             cv2.imwrite(finalimgfile, img)
             finalimgtoocr = finalimgfile
 
+        if enable_equations:
+            eqdata = get_equation_hocrs(fullpathimgfile, outputDirectory, page)
+        else:
+            eqdata = []
+
+        # Hide all equations from images before perfroming recognizing text
+        if len(eqdata) > 0:
+            img = cv2.imread(finalimgtoocr)
+            for entry in eqdata:
+                bbox = entry[1]
+                tab_x, tab_y = bbox[0], bbox[1]
+                tab_x2, tab_y2 = bbox[2], bbox[3]
+                img_x = int(tab_x)
+                img_y = int(tab_y)
+                img_x2 = int(tab_x2)
+                img_y2 = int(tab_y2)
+                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (255, 255, 255), -1)
+                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (255, 25, 25), 1)
+            finalimgfile = outputDirectory + "/MaskedImages/" + imfile[:-4] + '_filtered.jpg'
+            cv2.imwrite(finalimgfile, img)
+            finalimgtoocr = finalimgfile
+
         # Perform figure detection from page image to get their hocrs and bounding boxes
         # img = cv2.imread(imagesFolder + "/" + imfile)
         if enable_figures:
@@ -157,6 +172,21 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_f
                     line_position = int(find_all_ele[2])
                     if tab_position < line_position:
                         elem.insert_before(tab_element)
+                        break
+
+        # Adding equation hocr in final hocr at proper position
+        if len(eqdata) > 0:
+            for entry in eqdata:
+                eq_element = entry[0]
+                # print(tab_tag)
+                eq_bbox = entry[1]
+                # y-coordinate
+                eq_position = eq_bbox[1]
+                for elem in soup.find_all('span', class_="ocr_line"):
+                    find_all_ele = elem.attrs["title"].split(" ")
+                    line_position = int(find_all_ele[2])
+                    if eq_position < line_position:
+                        elem.insert_before(eq_element)
                         break
 
         # Adding image hocr in final hocr at proper position
