@@ -36,7 +36,7 @@ def detect_figures(image_path):
 # cv2.imwrite("result.jpg", annotated_frame)
 
 # Perform prediction
-# image_path = 'eq-page.png'
+# image_path = 'sample.png'
 
 if __name__ == "__main__":
     image_path = 'samples/page.png'

@@ -36,4 +36,4 @@ def get_equations(image_path):
 # cv2.imwrite("result.jpg", annotated_frame)
 
 # Perform prediction
-# image_path = 'eq-page.png'
+# image_path = 'samples/sample.png'

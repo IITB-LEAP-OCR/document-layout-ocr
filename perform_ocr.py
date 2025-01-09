@@ -113,7 +113,7 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_e
                 img_x2 = int(tab_x2)
                 img_y2 = int(tab_y2)
                 cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (255, 255, 255), -1)
-                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (255, 25, 25), 1)
+                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (25, 25, 255), 1)
             finalimgfile = outputDirectory + "/MaskedImages/" + imfile[:-4] + '_filtered.jpg'
             cv2.imwrite(finalimgfile, img)
             finalimgtoocr = finalimgfile
@@ -146,6 +146,23 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_e
             figuredata = get_images_from_page_image(outputDirectory, imfile, page)
         else:
             figuredata = []
+
+        # Hide all figures from images before perfroming recognizing text
+        if len(figuredata) > 0:
+            img = cv2.imread(finalimgtoocr)
+            for entry in figuredata:
+                bbox = entry[1]
+                tab_x, tab_y = bbox[0], bbox[1]
+                tab_x2, tab_y2 = bbox[2], bbox[3]
+                img_x = int(tab_x)
+                img_y = int(tab_y)
+                img_x2 = int(tab_x2)
+                img_y2 = int(tab_y2)
+                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (255, 255, 255), -1)
+                cv2.rectangle(img, (img_x, img_y), (img_x2, img_y2), (25, 255, 25), 1)
+            finalimgfile = outputDirectory + "/MaskedImages/" + imfile[:-4] + '_filtered.jpg'
+            cv2.imwrite(finalimgfile, img)
+            finalimgtoocr = finalimgfile
 
         # Write txt files for all pages using Tesseract
         txt = pytesseract.image_to_string(imagesFolder + "/" + imfile, lang=lang)
@@ -247,7 +264,7 @@ def get_images_from_page_image(outputDirectory, imfile, pagenumber):
         cv2.imwrite(outputDirectory + image_file_name, cropped_image)
         figure_count += 1
         bbox = [x1, y1, x2, y2]
-        imagehocr = f"<img class=\"ocr_im\" title=\"bbox {x1} {y1} {x2} {y2}\" src=\"../{image_file_name}\">"
+        imagehocr = f"<img class=\"ocr_im\" title=\"bbox {x1} {y1} {x2} {y2}\" src=\"..{image_file_name}\">"
         result.append([imagehocr, bbox])
     return result
 

@@ -12,6 +12,7 @@ def save_uploaded_file(uploadedfile):
 input_file = st.file_uploader('Choose your .pdf file', type="pdf")
 outputsetname = st.text_input(label= "Enter output set name  here", value="")
 enable_tables = st.selectbox("Do you want to preserve tables ?", (True, False))
+enable_equations = st.selectbox("Do you want to retrieve equations ?", (True, False))
 enable_figures = st.selectbox("Do you want to extract figures ?", (True, False))
 language = st.text_input(label= "Enter language here", value="eng")
 if len(outputsetname) and len(input_file.name):
@@ -19,7 +20,7 @@ if len(outputsetname) and len(input_file.name):
     if go:
         save_uploaded_file(input_file)
         with st.spinner('Loading...'):
-            outputDirectory = pdf_to_txt(input_dir + input_file.name, outputsetname, language, enable_tables, enable_figures)
+            outputDirectory = pdf_to_txt(input_dir + input_file.name, outputsetname, language, enable_tables, enable_equations, enable_figures)
 
         zipfile_name = outputDirectory + '.zip'
         zf = zipfile.ZipFile(zipfile_name, "w")
