@@ -21,7 +21,7 @@ class TableDetector:
         self.conf_thresh= conf_thresh
 
     
-    def predict(self, image, thresh = 0.5):
+    def predict(self, image, thresh = 0.25):
         if isinstance(image, str):
             image = cv2.imread(image, 0)
             orig_image = image.copy()

@@ -32,8 +32,12 @@ def get_equations(image_path):
 
     return dets
 
+# image_path = 'samples/p-08.jpg'
+# det_res = model.predict(
+#     image_path,   # Image to predict
+#     imgsz=1024,        # Prediction image size
+#     conf=0.1,          # Confidence threshold
+#     device="cpu",    # Device to use (e.g., 'cuda:0' or 'cpu')
+#     save = False)
 # annotated_frame = det_res[0].plot(pil=True, line_width=5, font_size=20)
 # cv2.imwrite("result.jpg", annotated_frame)
-
-# Perform prediction
-# image_path = 'samples/sample.png'
