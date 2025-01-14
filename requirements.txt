@@ -16,4 +16,5 @@ torchvision==0.15.2
 tqdm==4.66.5
 transformers==4.45.0
 ultralytics==8.2.103
-albumentations==1.0
+albucore==0.0.16
+albumentations==1.4.15
