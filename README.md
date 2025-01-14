@@ -3,7 +3,7 @@ Layout preserving OCR for documents. Includes text, tables and figures. Useful f
 
 
 ### Step 1 : Create Virtual Environment 
-Make sure you are using Python 3.9 and create a virtual environment to install upcoming dependencies
+Make sure you are using Python 3.10 and create a virtual environment to install upcoming dependencies
 ```
 python3 -m venv <myenvpath>
 ```
