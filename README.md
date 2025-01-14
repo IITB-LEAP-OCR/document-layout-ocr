@@ -3,7 +3,8 @@ Layout preserving OCR for documents. Includes text, tables and figures. Useful f
 
 
 ### Step 1 : Install Requirements
-You may create and use virtual environment to install the followh gdependencies
+Make sure you are using Python 3.9
+You may create and use virtual environment to install the following dependencies
 ```
 pip install -r requirements.in
 ```
