@@ -12,7 +12,7 @@ python3 -m venv <myenvpath>
 ### Step 2 : Install Requirements
 Use this virtual environment to install the following dependencies
 ```
-pip install -r requirements.in
+pip install -r requirements.txt
 ```
 
 ### Step 3 : Download Models
