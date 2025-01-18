@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 import base64
 
 # Streamlit app title
-st.title("HTML and Image Renderer from Uploaded ZIP")
+st.title("Visualize LPO Tool OCR Output")
+st.image("resources/iitb-bhashini-logo.png", use_column_width=True)
 
 # File uploader
 uploaded_file = st.file_uploader("Upload a ZIP file containing 'images' and 'CorrectorOutput' directories", type="zip")

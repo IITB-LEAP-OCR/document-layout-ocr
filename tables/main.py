@@ -13,10 +13,10 @@ import torch
 
 CURRENT_DIR = pathlib.Path(__file__).parent.absolute()
 
-def get_cell_ocr(img, bbox):
+def get_cell_ocr(img, bbox, lang):
     cell_img = img[bbox[1]:bbox[3], bbox[0]:bbox[2]]
     cell_pil_img = Image.fromarray(cell_img)
-    ocr_result = pytesseract.image_to_string(cell_pil_img, config='--psm 6')
+    ocr_result = pytesseract.image_to_string(cell_pil_img, config='--psm 6', lang = lang)
     ocr_result = ocr_result.replace("\n", " ")
     ocr_result = ocr_result[:-1]
     return ocr_result
@@ -26,7 +26,7 @@ def perform_td(image_path):
     table_det = TableDetector()
     return table_det.predict(image = image)
 
-def perform_tsr(img_file, x1, y1, struct_only):
+def perform_tsr(img_file, x1, y1, struct_only, lang = 'eng'):
     rows = get_rows_from_tatr(img_file)
     cols = get_cols_from_tatr(img_file)
     print('Physical TSR')
@@ -68,7 +68,7 @@ def perform_tsr(img_file, x1, y1, struct_only):
             # Replace the content inside the div with its 'title' attribute value
             ocr_bbox = bbox['title'].split(' ')[1:]
             ocr_bbox = list(map(int, ocr_bbox))
-            bbox.string = get_cell_ocr(cropped_img, ocr_bbox)
+            bbox.string = get_cell_ocr(cropped_img, ocr_bbox, lang)
             # Correct wrt table coordinates
             ocr_bbox[0] += x1
             ocr_bbox[1] += y1
@@ -119,7 +119,7 @@ def get_full_page_hocr(img_file, lang):
     return soup
 
 
-def get_table_hocrs(image_file):
+def get_table_hocrs(image_file, lang = 'eng'):
     final_hocrs = []
     image = cv2.imread(image_file)
     dets = perform_td(image_file)
@@ -130,7 +130,7 @@ def get_table_hocrs(image_file):
         cropped_img = image[y1:y2, x1:x2]  # Crop the image using the bounding box
         plt.imsave("temp.jpg", cropped_img)
         img_path = "temp.jpg"
-        hocr_string, struct_cells = perform_tsr(img_path, x1, y1, False)
+        hocr_string, struct_cells = perform_tsr(img_path, x1, y1, False, lang)
         final_hocrs.append([hocr_string, tab_box])
 
     return final_hocrs

@@ -176,8 +176,8 @@ def get_logical_structure(img_file, device):
     img = test_transforms(img)
     input_img = torch.stack([img])
 
-    if not torch.device("cpu"):
-        input_img = input_img.to(torch.device('cuda:0'))
+    # if not torch.device("cpu"):
+    input_img = input_img.to(torch.device('cuda:0'))
 
     # Infer
     pred = model(input_img, None, return_preds=True)

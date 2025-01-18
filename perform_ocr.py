@@ -93,7 +93,7 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_e
         # Get tables from faster rcnn predictions in hocr format
         fullpathimgfile = imagesFolder + '/' + imfile
         if enable_tables:
-            tabledata = get_tables_from_page(fullpathimgfile)
+            tabledata = get_tables_from_page(fullpathimgfile, lang)
         else:
             tabledata = []
 
@@ -240,9 +240,9 @@ def pdf_to_txt(orig_pdf_path, project_folder_name, lang, enable_tables, enable_e
     return outputDirectory
 
 
-def get_tables_from_page(fullpathimgfile):
+def get_tables_from_page(fullpathimgfile, lang):
     # Return list of table HOCR and bbox here
-    result = get_table_hocrs(fullpathimgfile)
+    result = get_table_hocrs(fullpathimgfile, lang)
     print(str(fullpathimgfile) + ' has ' + str(len(result)) + ' tables extracted')
     #print(result)
     return result
