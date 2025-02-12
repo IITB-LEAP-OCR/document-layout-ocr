@@ -32,6 +32,11 @@ def perform_tsr(img_file, x1, y1, struct_only):
     print('Physical TSR')
     print(str(len(rows)) + ' rows detected')
     print(str(len(cols)) + ' cols detected')
+    # Ensure that detected table has atleast one cell!!
+    if rows < 1:
+        rows = 1
+    if cols < 1:
+        cols = 1
     rows, cols = order_rows_cols(rows, cols)
     ## Extracting Grid Cells
     cells = get_cells_from_rows_cols(rows, cols)
