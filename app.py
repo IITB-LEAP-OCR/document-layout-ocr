@@ -11,7 +11,7 @@ def save_uploaded_file(uploadedfile):
     return st.success("Saved File:{} to tempDir".format(uploadedfile.name))
 
 st.title('IITB - Layout Preserving OCR Tool')
-st.image("resources/iitb-bhashini-logo.png", use_column_width=True)
+# st.image("resources/iitb-bhashini-logo.png", use_column_width=True)
 
 input_file = st.file_uploader('Choose your .pdf file', type="pdf")
 outputsetname = st.text_input(label= "Enter output set name  here", value="")

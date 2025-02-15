@@ -1,7 +1,7 @@
 from perform_ocr import pdf_to_txt
 
-input_file = 'data/input/arxiv.pdf'
-outputsetname = 'TEST'
+input_file = '/home/dhruv/Downloads/comic.pdf'
+outputsetname = 'TEST-COMIC'
 
 # Layout elements
 tables = True

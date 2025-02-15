@@ -50,26 +50,28 @@ if uploaded_file:
                 selected_page = st.selectbox("Select a page:", common_keys)
 
                 # Display selected HTML and image side by side
-                if selected_page:
-                    col1, col2 = st.columns(2)
+                # if selected_page:
+                #     col1, col2 = st.columns(2)
+                #
+                #     with col1:
+                st.markdown(f"### Image: {selected_page}.jpg")
+                st.image(image_files[selected_page], use_column_width=True)
 
-                    with col1:
-                        st.markdown(f"### HTML: {selected_page}.html")
-                        with open(html_files[selected_page], "r", encoding="utf-8") as file:
-                            html_content = file.read()
-                            soup = BeautifulSoup(html_content, "html.parser")
-                            for img_tag in soup.find_all("img"):
-                                src = img_tag.get("src", "")
-                                img_file = src.split('/')[-1]
-                                img_file_path = cropped_images_dir + '/' + img_file
-                                # print(new_path)
-                                # img_tag["src"] = new_path
-                                with open(img_file_path, "rb") as img_file:
-                                    img_base64 = base64.b64encode(img_file.read()).decode("utf-8")
-                                    img_extension = os.path.splitext(img_file_path)[1][1:]  # Get file extension
-                                    img_tag["src"] = f"data:image/{img_extension};base64,{img_base64}"
-                            st.components.v1.html(str(soup), height=500, scrolling=True)
+                st.markdown(f"### HTML: {selected_page}.html")
+                with open(html_files[selected_page], "r", encoding="utf-8") as file:
+                    html_content = file.read()
+                    soup = BeautifulSoup(html_content, "html.parser")
+                    for img_tag in soup.find_all("img"):
+                        src = img_tag.get("src", "")
+                        img_file = src.split('/')[-1]
+                        img_file_path = cropped_images_dir + '/' + img_file
+                        # print(new_path)
+                        # img_tag["src"] = new_path
+                        with open(img_file_path, "rb") as img_file:
+                            img_base64 = base64.b64encode(img_file.read()).decode("utf-8")
+                            img_extension = os.path.splitext(img_file_path)[1][1:]  # Get file extension
+                            img_tag["src"] = f"data:image/{img_extension};base64,{img_base64}"
+                    st.components.v1.html(str(soup), height = 750, scrolling=True)
 
-                    with col2:
-                        st.markdown(f"### Image: {selected_page}.jpg")
-                        st.image(image_files[selected_page], use_column_width=True)
+                    #with col2:
+

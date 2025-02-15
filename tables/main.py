@@ -32,15 +32,19 @@ def perform_tsr(img_file, x1, y1, struct_only, lang = 'eng'):
     print('Physical TSR')
     print(str(len(rows)) + ' rows detected')
     print(str(len(cols)) + ' cols detected')
-    # Ensure that detected table has atleast one cell!!
-    if rows < 1:
-        rows = 1
-    if cols < 1:
-        cols = 1
     rows, cols = order_rows_cols(rows, cols)
     ## Extracting Grid Cells
     cells = get_cells_from_rows_cols(rows, cols)
-
+    ## Corner case if no cells detected
+    if len(cells) == 0 or len(rows) == 0 or len(cols) == 0:
+        print('No Physical Structure')
+        table_img = cv2.imread(img_file)
+        h, w, c = table_img.shape
+        bbox = [0, 0, w, h]
+        text = get_cell_ocr(table_img, bbox, lang)
+        html_string = f'<table border = 1><tr><td title="bbox {x1} {y1} {x1 + w} {y1 + h}">' + text + '</td></tr></table>'
+        soup = BeautifulSoup(html_string)
+        return soup, []
     print('Logical TSR')
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     otsl_string = get_logical_structure(img_file, device)
